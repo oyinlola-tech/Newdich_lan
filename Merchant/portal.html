@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect to Network</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="portal-header">
+        <div class="container">
+            <h1>Welcome to <span id="network-name">Network Name</span></h1>
+            <p>Choose a plan to get online</p>
+        </div>
+    </header>
+
+    <main class="portal-main">
+        <div class="container">
+            <div class="plan-grid" id="plan-list">
+                <!-- Plans will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Payment Modal (simplified) -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Complete Payment</h3>
+            <p>Plan: <span id="modal-plan-name"></span></p>
+            <p>Amount: ₦<span id="modal-plan-price"></span></p>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="payment-email">Email (optional)</label>
+                    <input type="email" id="payment-email" placeholder="Enter your email for receipt">
+                </div>
+                <button type="submit" class="btn btn-primary">Pay Now</button>
+            </form>
+            <div id="payment-message"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Powered by NEWDICH TECHNOLOGY</p>
+            <p>&copy; <span id="year"></span> Newdich Technology</p>
+        </div>
+    </footer>
+
+    <script src="api/index.js"></script>
+    <script src="js/portal.js"></script>
+</body>
+</html>

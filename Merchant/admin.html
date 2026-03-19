@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Dashboard - Newdich</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <h1>Merchant Dashboard</h1>
+            <button id="logout-btn" class="btn btn-secondary">Logout</button>
+        </div>
+    </header>
+
+    <nav class="admin-tabs">
+        <div class="container">
+            <button class="tab-link active" data-tab="users">Users</button>
+            <button class="tab-link" data-tab="history">Payment History</button>
+            <button class="tab-link" data-tab="plans">Manage Plans</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="container">
+            <!-- Users Tab -->
+            <div id="users" class="tab-content active">
+                <h2>Connected Users</h2>
+                <div class="table-responsive">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>MAC</th>
+                                <th>IP</th>
+                                <th>Email</th>
+                                <th>Plan</th>
+                                <th>Hours</th>
+                                <th>Expires</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payment History Tab -->
+            <div id="history" class="tab-content">
+                <h2>Payment History</h2>
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Plan</th>
+                                <th>Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Plans Management Tab -->
+            <div id="plans" class="tab-content">
+                <h2>Manage Plans</h2>
+                <button id="add-plan-btn" class="btn btn-primary">Add New Plan</button>
+                <div class="plan-list" id="plan-list">
+                    <!-- Plans will be listed here with edit/delete -->
+                </div>
+                <!-- Plan Form (hidden initially) -->
+                <div id="plan-form-container" style="display: none;">
+                    <h3 id="plan-form-title">Add Plan</h3>
+                    <form id="plan-form">
+                        <input type="hidden" id="plan-id">
+                        <div class="form-group">
+                            <label for="plan-name">Plan Name</label>
+                            <input type="text" id="plan-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="plan-duration">Duration (hours)</label>
+                            <input type="number" id="plan-duration" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="plan-price">Price (₦)</label>
+                            <input type="number" step="0.01" id="plan-price" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel-plan-btn" class="btn btn-secondary">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Powered by NEWDICH TECHNOLOGY</p>
+            <p>&copy; <span id="year"></span> Newdich Technology</p>
+        </div>
+    </footer>
+
+    <script src="api/index.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
