@@ -35,8 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('merchant_token');
-        localStorage.removeItem('merchant_id');
+        window.MerchantAPI.clearAuthToken();
         window.location.href = 'login.html';
     });
 
@@ -58,6 +57,15 @@ function escapeHTML(value) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+
+function handleAuthError(error) {
+    if (error && error.status === 401) {
+        window.MerchantAPI.clearAuthToken();
+        window.location.href = 'login.html';
+        return true;
+    }
+    return false;
 }
 
 // Users
@@ -82,6 +90,7 @@ async function loadUsers() {
             </tr>
         `).join('');
     } catch (error) {
+        if (handleAuthError(error)) return;
         console.error('Failed to load users:', error);
     }
 }
@@ -107,6 +116,7 @@ async function loadHistory() {
             </tr>
         `).join('');
     } catch (error) {
+        if (handleAuthError(error)) return;
         console.error('Failed to load history:', error);
     }
 }
@@ -130,6 +140,7 @@ async function loadPlansList() {
             </div>
         `).join('');
     } catch (error) {
+        if (handleAuthError(error)) return;
         console.error('Failed to load plans:', error);
     }
 }

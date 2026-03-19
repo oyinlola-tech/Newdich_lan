@@ -159,6 +159,10 @@
         });
     }
 
+    if (window.MERCHANT_API_BASE_URL) {
+        setApiBaseUrl(window.MERCHANT_API_BASE_URL);
+    }
+
     window.MerchantAPI = {
         // config & auth
         setApiBaseUrl,
