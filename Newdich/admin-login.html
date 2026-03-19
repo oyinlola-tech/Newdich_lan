@@ -10,6 +10,7 @@
     <main class="login-page">
         <div class="login-box">
             <h2>Newdich Admin Login</h2>
+            <p class="muted">Sign in to manage packages and merchants.</p>
             <form id="admin-login-form">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -17,7 +18,10 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="input-with-action">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" id="toggle-password" class="link-btn">Show</button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
                 <div id="login-message" class="message"></div>
@@ -30,7 +34,6 @@
             <p>&copy; <span id="year"></span> Newdich Technology</p>
         </div>
     </footer>
-    <script src="api/index.js"></script>
-    <script src="js/admin-login.js"></script>
+    <script type="module" src="js/admin-login.js"></script>
 </body>
 </html>

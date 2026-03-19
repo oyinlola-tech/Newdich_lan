@@ -23,10 +23,48 @@
 
     <main class="admin-main">
         <div class="container">
+            <section class="admin-overview">
+                <div class="admin-toolbar">
+                    <div>
+                        <h2>Dashboard Overview</h2>
+                        <p class="muted">Quick insights across merchants and packages.</p>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button id="refresh-dashboard" class="btn btn-secondary">Refresh</button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Merchants</span>
+                        <span id="stat-total-merchants" class="stat-value">--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Pending Merchants</span>
+                        <span id="stat-pending-merchants" class="stat-value">--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Approved Merchants</span>
+                        <span id="stat-approved-merchants" class="stat-value">--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Active Packages</span>
+                        <span id="stat-packages" class="stat-value">--</span>
+                    </div>
+                </div>
+                <div id="admin-message" class="message"></div>
+            </section>
             <!-- Packages Tab -->
             <div id="packages" class="tab-content active">
                 <h2>Manage Service Packages</h2>
-                <button id="add-package-btn" class="btn btn-primary">Add New Package</button>
+                <div class="admin-toolbar">
+                    <div class="toolbar-actions">
+                        <button id="add-package-btn" class="btn btn-primary">Add New Package</button>
+                        <button id="refresh-packages" class="btn btn-secondary">Refresh</button>
+                    </div>
+                    <div class="toolbar-actions">
+                        <input type="text" id="package-search" placeholder="Search packages">
+                    </div>
+                </div>
                 <div class="package-list" id="package-list">
                     <!-- Packages will be listed here -->
                 </div>
@@ -40,12 +78,16 @@
                             <input type="text" id="package-name" required>
                         </div>
                         <div class="form-group">
-                            <label for="package-price">Price ($)</label>
+                            <label for="package-price">Price (NGN)</label>
                             <input type="number" step="0.01" id="package-price" required>
                         </div>
                         <div class="form-group">
                             <label for="package-benefits">Benefits (comma separated)</label>
                             <input type="text" id="package-benefits" placeholder="e.g. 24/7 support, No contract">
+                        </div>
+                        <div class="form-group">
+                            <label for="package-notes">Internal Notes (optional)</label>
+                            <input type="text" id="package-notes" placeholder="Visible to admins only">
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                         <button type="button" id="cancel-package-btn" class="btn btn-secondary">Cancel</button>
@@ -56,6 +98,20 @@
             <!-- Merchants Tab -->
             <div id="merchants" class="tab-content">
                 <h2>Registered Merchants</h2>
+                <div class="admin-toolbar">
+                    <div class="toolbar-actions">
+                        <button id="refresh-merchants" class="btn btn-secondary">Refresh</button>
+                    </div>
+                    <div class="toolbar-actions filters">
+                        <input type="text" id="merchant-search" placeholder="Search name, email, phone">
+                        <select id="merchant-status-filter">
+                            <option value="all">All statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="merchants-table">
                         <thead>
@@ -74,6 +130,9 @@
                         <tbody></tbody>
                     </table>
                 </div>
+                <div id="merchants-empty" class="empty-state" style="display: none;">
+                    No merchants match your filters yet.
+                </div>
             </div>
         </div>
     </main>
@@ -85,7 +144,6 @@
         </div>
     </footer>
 
-    <script src="api/index.js"></script>
-    <script src="js/admin-dashboard.js"></script>
+    <script type="module" src="js/admin-dashboard.js"></script>
 </body>
 </html>

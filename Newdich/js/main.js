@@ -1,3 +1,5 @@
+import { getPackages, registerMerchant } from '../api/index.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     // Set current year in footer
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -51,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadPackages() {
     try {
-        const packages = await getPackages();
+        const packagesResponse = await getPackages();
+        const packages = Array.isArray(packagesResponse) ? packagesResponse : packagesResponse.data || [];
         const container = document.getElementById('package-list');
         container.innerHTML = packages.map(pkg => `
             <div class="package-card">

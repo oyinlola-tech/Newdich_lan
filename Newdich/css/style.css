@@ -78,6 +78,16 @@ nav {
     background: #0056b3;
 }
 
+.btn-secondary {
+    background: #f1f3f5;
+    color: #212529;
+    border: 1px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+}
+
 /* Hero Section */
 .hero {
     background: #f8f9fa;
@@ -173,7 +183,10 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="tel"] {
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
@@ -210,6 +223,11 @@ button[type="submit"] {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.muted {
+    color: #6c757d;
+    font-size: 0.95rem;
 }
 
 /* Footer */
@@ -282,6 +300,60 @@ footer p {
     display: block;
 }
 
+.admin-overview {
+    padding: 2rem 0;
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.admin-toolbar input,
+.admin-toolbar select {
+    min-width: 200px;
+}
+
+.filters {
+    flex-wrap: wrap;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
 .table-responsive {
     overflow-x: auto;
 }
@@ -315,11 +387,34 @@ tr:hover {
     border: 1px solid #dee2e6;
     border-radius: 4px;
     margin-bottom: 0.5rem;
+    gap: 1rem;
 }
 
 .plan-item .actions button {
     margin-left: 0.5rem;
     padding: 0.25rem 0.5rem;
+}
+
+.plan-title {
+    font-weight: 600;
+}
+
+.plan-meta {
+    color: #6c757d;
+    margin: 0.35rem 0 0.75rem;
+}
+
+.benefit-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: #f1f3f5;
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
 }
 
 #package-form-container {
@@ -350,4 +445,62 @@ tr:hover {
 .login-box h2 {
     text-align: center;
     margin-bottom: 1.5rem;
+}
+
+.login-box .muted {
+    text-align: center;
+    margin-top: -0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-with-action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-with-action input {
+    flex: 1;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.empty-state {
+    padding: 1.5rem;
+    border: 1px dashed #ced4da;
+    border-radius: 6px;
+    text-align: center;
+    color: #6c757d;
+    margin-top: 1rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-danger {
+    background: #f8d7da;
+    color: #721c24;
 }
