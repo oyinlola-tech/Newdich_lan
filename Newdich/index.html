@@ -5,26 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newdich Technology LAN</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23007bff'/%3E%3Ctext x='32' y='42' font-family='Arial, Helvetica, sans-serif' font-size='32' text-anchor='middle' fill='white'%3EN%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">NEWDICH</div>
-            <ul class="nav-links">
+    <header class="site-header">
+        <nav class="container nav-shell">
+            <div class="brand">
+                <span class="brand-mark">N</span>
+                <span class="brand-name">NEWDICH</span>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#packages">Packages</a></li>
+                <li><a href="#how">How It Works</a></li>
                 <li><a href="#signup">Become a Merchant</a></li>
             </ul>
+            <div class="nav-actions">
+                <a href="#signup" class="btn btn-primary">Start Selling</a>
+            </div>
         </nav>
     </header>
 
     <main>
         <!-- Hero Section -->
         <section class="hero">
-            <div class="container">
-                <h1>Sell Starlink Internet to Your Community</h1>
-                <p>Start your own internet business with our ready‑to‑use platform.</p>
-                <a href="#signup" class="btn btn-primary">Get Started</a>
+            <div class="hero-backdrop"></div>
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow">Merchant Program</p>
+                    <h1>Launch a fast, reliable internet business in your community.</h1>
+                    <p class="lead">
+                        Newdich helps you resell Starlink-backed connectivity with onboarding,
+                        marketing, and operations tools already built in.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#signup" class="btn btn-primary">Become a Merchant</a>
+                        <a href="#packages" class="btn btn-secondary">View Packages</a>
+                    </div>
+                    <div class="hero-badges">
+                        <span>Instant onboarding</span>
+                        <span>Dedicated support</span>
+                        <span>Fast payout cycles</span>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <h3>Weekly Earnings Snapshot</h3>
+                        <p class="muted">Projected revenue for a single territory.</p>
+                    </div>
+                    <div class="hero-stats">
+                        <div>
+                            <span class="stat-label">Active Customers</span>
+                            <span class="stat-value">128</span>
+                        </div>
+                        <div>
+                            <span class="stat-label">Avg. ARPU</span>
+                            <span class="stat-value">₦42,000</span>
+                        </div>
+                        <div>
+                            <span class="stat-label">Weekly Payout</span>
+                            <span class="stat-value">₦5,376,000</span>
+                        </div>
+                    </div>
+                    <div class="hero-card-footer">
+                        <span>Includes marketing kit + onboarding assistance.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="value-strip">
+            <div class="container value-grid">
+                <div>
+                    <h3>Built for growth</h3>
+                    <p>We provide sales playbooks, pricing tools, and community activation support.</p>
+                </div>
+                <div>
+                    <h3>Operational clarity</h3>
+                    <p>Track merchants, customers, and payouts in one place with admin-grade dashboards.</p>
+                </div>
+                <div>
+                    <h3>Trusted uptime</h3>
+                    <p>Starlink-backed infrastructure and 24/7 support help you keep customers happy.</p>
+                </div>
             </div>
         </section>
 
@@ -32,8 +102,33 @@
         <section id="packages" class="packages">
             <div class="container">
                 <h2>Our Service Packages</h2>
+                <p class="section-lead">Choose flexible tiers designed for neighborhoods, estates, and SMEs.</p>
                 <div class="package-grid" id="package-list">
                     <!-- Packages will be loaded here via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="how" class="how">
+            <div class="container">
+                <h2>How It Works</h2>
+                <p class="section-lead">From application to activation in three streamlined steps.</p>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <span class="step-number">01</span>
+                        <h3>Apply & get verified</h3>
+                        <p>Submit your business details. Our team verifies your territory within 24 hours.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">02</span>
+                        <h3>Launch your territory</h3>
+                        <p>Receive a branded marketing kit, sales script, and local activation support.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">03</span>
+                        <h3>Grow recurring revenue</h3>
+                        <p>Earn weekly payouts while Newdich handles platform operations and support.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -41,7 +136,16 @@
         <!-- Merchant Signup Form -->
         <section id="signup" class="signup">
             <div class="container">
-                <h2>Become a Merchant</h2>
+                <div class="signup-shell">
+                    <div>
+                        <h2>Become a Merchant</h2>
+                        <p class="section-lead">Tell us about your business. We will reach out within 24 hours.</p>
+                        <div class="signup-points">
+                            <p><strong>Territory protection</strong> so you grow without overlap.</p>
+                            <p><strong>Marketing support</strong> with ready-made materials.</p>
+                            <p><strong>Fast payouts</strong> deposited weekly.</p>
+                        </div>
+                    </div>
                 <form id="merchant-form">
                     <div class="form-group">
                         <label for="fullname">Full Name *</label>
@@ -84,6 +188,27 @@
                     <button type="submit" class="btn btn-primary">Register</button>
                     <div id="form-message" class="message"></div>
                 </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h3>What regions can I cover?</h3>
+                        <p>We support city-wide, estate, and neighborhood territories based on demand and coverage.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>How soon can I start selling?</h3>
+                        <p>Most merchants are onboarded within 1-2 business days after verification.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Do I need technical expertise?</h3>
+                        <p>No. We provide the tools, onboarding, and support. You focus on acquiring customers.</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

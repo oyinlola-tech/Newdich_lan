@@ -163,7 +163,7 @@ function renderPackages() {
             <div class="plan-item">
                 <div>
                     <div class="plan-title">${pkg.name || 'Untitled Package'}</div>
-                    <div class="plan-meta">$${Number(pkg.price || 0).toFixed(2)}</div>
+                    <div class="plan-meta">₦${Number(pkg.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     ${benefits}
                 </div>
                 <div class="actions">

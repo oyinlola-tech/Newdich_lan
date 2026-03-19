@@ -11,6 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('merchant-form');
     const messageDiv = document.getElementById('form-message');
 
+    // Mobile nav toggle
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            navToggle.classList.toggle('open', isOpen);
+            navToggle.setAttribute('aria-expanded', String(isOpen));
+        });
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('open');
+                navToggle.classList.remove('open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -59,7 +77,7 @@ async function loadPackages() {
         container.innerHTML = packages.map(pkg => `
             <div class="package-card">
                 <h3>${pkg.name}</h3>
-                <div class="price">$${pkg.price}</div>
+                <div class="price">₦${Number(pkg.price || 0).toLocaleString()}</div>
                 <div class="benefits">${pkg.benefits || ''}</div>
                 <a href="#signup" class="btn btn-primary">Choose</a>
             </div>
