@@ -27,9 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(tabId).classList.add('active');
 
             // Load data for the tab if needed
+            if (tabId === 'overview') loadOverview();
             if (tabId === 'users') loadUsers();
             if (tabId === 'history') loadHistory();
             if (tabId === 'plans') loadPlansList();
+            if (tabId === 'profile') loadProfile();
         });
     });
 
@@ -39,15 +41,54 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
     });
 
+    // Refresh
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+        loadOverview();
+        loadUsers();
+        loadHistory();
+        loadPlansList();
+        loadProfile();
+    });
+
     // Plan management
     document.getElementById('add-plan-btn').addEventListener('click', () => showPlanForm());
     document.getElementById('cancel-plan-btn').addEventListener('click', hidePlanForm);
     document.getElementById('plan-form').addEventListener('submit', savePlan);
 
+    // Profile
+    document.getElementById('profile-form').addEventListener('submit', saveProfile);
+
+    // Users actions
+    document.querySelector('#users-table tbody').addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('[data-action="toggle"]');
+        const extendBtn = e.target.closest('[data-action="extend"]');
+        if (toggleBtn) {
+            toggleActive(toggleBtn.getAttribute('data-mac'));
+        }
+        if (extendBtn) {
+            extendUserHours(extendBtn.getAttribute('data-mac'));
+        }
+    });
+
+    // History actions
+    document.querySelector('#history-table tbody').addEventListener('click', (e) => {
+        const verifyBtn = e.target.closest('[data-action="verify"]');
+        const refundBtn = e.target.closest('[data-action="refund"]');
+        if (verifyBtn) {
+            verifyTransaction(verifyBtn.getAttribute('data-reference'));
+        }
+        if (refundBtn) {
+            refundTransaction(refundBtn.getAttribute('data-transaction'));
+        }
+    });
+
     // Load initial tab data
+    loadOverview();
     loadUsers();
     loadHistory();
     loadPlansList();
+    loadProfile();
+    loadHeaderProfile();
 });
 
 function escapeHTML(value) {
@@ -68,6 +109,70 @@ function handleAuthError(error) {
     return false;
 }
 
+function formatAmount(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return '--';
+    return `NGN ${num.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+async function loadHeaderProfile() {
+    try {
+        const profile = await window.MerchantAPI.getMerchantProfile();
+        const name = profile?.name || profile?.business_name || 'Merchant Dashboard';
+        const id = profile?.id || localStorage.getItem('merchant_id') || '--';
+        document.getElementById('merchant-name').textContent = name;
+        document.getElementById('merchant-id').textContent = `ID: ${id}`;
+    } catch (error) {
+        if (handleAuthError(error)) return;
+        const id = localStorage.getItem('merchant_id') || '--';
+        document.getElementById('merchant-id').textContent = `ID: ${id}`;
+    }
+}
+
+async function loadOverview() {
+    try {
+        const [stats, revenue] = await Promise.all([
+            window.MerchantAPI.getStats(),
+            window.MerchantAPI.getRevenueSummary()
+        ]);
+
+        const active = stats?.active_users ?? stats?.active ?? '--';
+        const total = stats?.total_users ?? stats?.total ?? '--';
+        const revenueToday = stats?.revenue_today ?? stats?.today_revenue ?? '--';
+        const txToday = stats?.transactions_today ?? stats?.today_transactions ?? '--';
+
+        document.getElementById('stat-active').textContent = active;
+        document.getElementById('stat-total').textContent = total;
+        document.getElementById('stat-revenue-today').textContent = formatAmount(revenueToday);
+        document.getElementById('stat-tx-today').textContent = txToday;
+
+        const gross = revenue?.gross ?? revenue?.total_gross ?? '--';
+        const refunds = revenue?.refunds ?? revenue?.total_refunds ?? '--';
+        const net = revenue?.net ?? revenue?.total_net ?? '--';
+        document.getElementById('kpi-gross').textContent = formatAmount(gross);
+        document.getElementById('kpi-refunds').textContent = formatAmount(refunds);
+        document.getElementById('kpi-net').textContent = formatAmount(net);
+
+        const breakdown = revenue?.breakdown || revenue?.daily || [];
+        const container = document.getElementById('revenue-breakdown');
+        if (!Array.isArray(breakdown) || breakdown.length === 0) {
+            container.textContent = 'No breakdown data.';
+            return;
+        }
+
+        const rows = breakdown.map(item => `
+            <div class="mini-row">
+                <span>${escapeHTML(item.date || item.label || '')}</span>
+                <span>${formatAmount(item.amount ?? item.value)}</span>
+            </div>
+        `).join('');
+        container.innerHTML = rows;
+    } catch (error) {
+        if (handleAuthError(error)) return;
+        console.error('Failed to load overview:', error);
+    }
+}
+
 // Users
 async function loadUsers() {
     try {
@@ -86,7 +191,10 @@ async function loadUsers() {
                 <td>${escapeHTML(user.hours_paid_for)}</td>
                 <td>${escapeHTML(user.expires_at)}</td>
                 <td>${user.active ? 'Active' : 'Inactive'}</td>
-                <td><button class="btn btn-secondary" onclick="toggleActive('${escapeHTML(user.mac)}')">Toggle</button></td>
+                <td>
+                    <button class="btn btn-secondary" data-action="toggle" data-mac="${escapeHTML(user.mac)}">Toggle</button>
+                    <button class="btn btn-ghost" data-action="extend" data-mac="${escapeHTML(user.mac)}">Extend</button>
+                </td>
             </tr>
         `).join('');
     } catch (error) {
@@ -101,18 +209,22 @@ async function loadHistory() {
         const history = await window.MerchantAPI.getPaymentHistory();
         const tbody = document.querySelector('#history-table tbody');
         if (!Array.isArray(history) || history.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7">No payments found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8">No payments found.</td></tr>';
             return;
         }
         tbody.innerHTML = history.map(item => `
             <tr>
                 <td>${escapeHTML(item.email)}</td>
-                <td>NGN ${escapeHTML(item.amount)}</td>
+                <td>${formatAmount(item.amount)}</td>
                 <td>${escapeHTML(item.status)}</td>
                 <td>${escapeHTML(item.transaction_id)}</td>
                 <td>${escapeHTML(item.date_started || item.date_completed)}</td>
                 <td>${escapeHTML(item.plan)}</td>
                 <td>${escapeHTML(item.hours_paid_for)}</td>
+                <td>
+                    <button class="btn btn-ghost" data-action="verify" data-reference="${escapeHTML(item.payment_reference || item.reference || '')}">Verify</button>
+                    <button class="btn btn-secondary" data-action="refund" data-transaction="${escapeHTML(item.transaction_id || '')}">Refund</button>
+                </td>
             </tr>
         `).join('');
     } catch (error) {
@@ -213,3 +325,81 @@ window.toggleActive = async (mac) => {
         alert(error.message || 'Failed to toggle user status.');
     }
 };
+
+async function extendUserHours(mac) {
+    const input = prompt('Extend by how many hours?', '1');
+    if (!input) return;
+    const hours = Number(input);
+    if (!Number.isFinite(hours) || hours <= 0) {
+        alert('Please enter a valid number of hours.');
+        return;
+    }
+    try {
+        await window.MerchantAPI.extendUser(mac, hours);
+        loadUsers();
+    } catch (error) {
+        alert(error.message || 'Failed to extend user.');
+    }
+}
+
+async function verifyTransaction(reference) {
+    if (!reference) {
+        alert('No payment reference found.');
+        return;
+    }
+    try {
+        await window.MerchantAPI.verifyPayment(reference);
+        loadHistory();
+    } catch (error) {
+        alert(error.message || 'Failed to verify payment.');
+    }
+}
+
+async function refundTransaction(transactionId) {
+    if (!transactionId) {
+        alert('No transaction ID found.');
+        return;
+    }
+    if (!confirm('Refund this transaction?')) return;
+    try {
+        await window.MerchantAPI.refundPayment(transactionId);
+        loadHistory();
+    } catch (error) {
+        alert(error.message || 'Refund failed.');
+    }
+}
+
+async function loadProfile() {
+    try {
+        const profile = await window.MerchantAPI.getMerchantProfile();
+        document.getElementById('profile-name').value = profile?.name || profile?.business_name || '';
+        document.getElementById('profile-contact').value = profile?.contact_email || profile?.email || '';
+        document.getElementById('profile-phone').value = profile?.phone || '';
+        document.getElementById('profile-location').value = profile?.location || '';
+        document.getElementById('profile-network').value = profile?.network_name || '';
+        document.getElementById('profile-timezone').value = profile?.timezone || '';
+    } catch (error) {
+        if (handleAuthError(error)) return;
+        console.error('Failed to load profile:', error);
+    }
+}
+
+async function saveProfile(e) {
+    e.preventDefault();
+    const messageEl = document.getElementById('profile-message');
+    messageEl.textContent = 'Saving...';
+    try {
+        await window.MerchantAPI.updateMerchantProfile({
+            name: document.getElementById('profile-name').value.trim(),
+            contact_email: document.getElementById('profile-contact').value.trim(),
+            phone: document.getElementById('profile-phone').value.trim(),
+            location: document.getElementById('profile-location').value.trim(),
+            network_name: document.getElementById('profile-network').value.trim(),
+            timezone: document.getElementById('profile-timezone').value.trim()
+        });
+        messageEl.textContent = 'Saved.';
+        loadHeaderProfile();
+    } catch (error) {
+        messageEl.textContent = error.message || 'Save failed.';
+    }
+}

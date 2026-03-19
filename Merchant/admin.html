@@ -9,23 +9,83 @@
 <body>
     <header class="admin-header">
         <div class="container">
-            <h1>Merchant Dashboard</h1>
-            <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            <div>
+                <div class="eyebrow">Merchant Console</div>
+                <h1 id="merchant-name">Merchant Dashboard</h1>
+                <div class="subtle" id="merchant-id">ID: --</div>
+            </div>
+            <div class="header-actions">
+                <button id="refresh-btn" class="btn btn-ghost">Refresh</button>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
         </div>
     </header>
 
     <nav class="admin-tabs">
         <div class="container">
-            <button class="tab-link active" data-tab="users">Users</button>
+            <button class="tab-link active" data-tab="overview">Overview</button>
+            <button class="tab-link" data-tab="users">Users</button>
             <button class="tab-link" data-tab="history">Payment History</button>
             <button class="tab-link" data-tab="plans">Manage Plans</button>
+            <button class="tab-link" data-tab="profile">Profile</button>
         </div>
     </nav>
 
     <main class="admin-main">
         <div class="container">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="grid-2">
+                    <section class="card">
+                        <div class="card-header">
+                            <h2>Network Status</h2>
+                            <span class="badge" id="status-badge">Live</span>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat">
+                                <div class="stat-label">Active Users</div>
+                                <div class="stat-value" id="stat-active">--</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Total Users</div>
+                                <div class="stat-value" id="stat-total">--</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Revenue (Today)</div>
+                                <div class="stat-value" id="stat-revenue-today">--</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Transactions (Today)</div>
+                                <div class="stat-value" id="stat-tx-today">--</div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="card">
+                        <div class="card-header">
+                            <h2>Revenue Summary</h2>
+                            <span class="subtle">Last 30 days</span>
+                        </div>
+                        <div class="kpis">
+                            <div>
+                                <div class="kpi-label">Gross</div>
+                                <div class="kpi-value" id="kpi-gross">--</div>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Refunds</div>
+                                <div class="kpi-value" id="kpi-refunds">--</div>
+                            </div>
+                            <div>
+                                <div class="kpi-label">Net</div>
+                                <div class="kpi-value" id="kpi-net">--</div>
+                            </div>
+                        </div>
+                        <div class="mini-table" id="revenue-breakdown"></div>
+                    </section>
+                </div>
+            </div>
+
             <!-- Users Tab -->
-            <div id="users" class="tab-content active">
+            <div id="users" class="tab-content">
                 <h2>Connected Users</h2>
                 <div class="table-responsive">
                     <table id="users-table">
@@ -60,6 +120,7 @@
                                 <th>Date</th>
                                 <th>Plan</th>
                                 <th>Hours</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -95,6 +156,47 @@
                         <button type="button" id="cancel-plan-btn" class="btn btn-secondary">Cancel</button>
                     </form>
                 </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <h2>Merchant Profile</h2>
+                <form id="profile-form" class="card form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-name">Business Name</label>
+                            <input type="text" id="profile-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-contact">Contact Email</label>
+                            <input type="email" id="profile-contact" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-phone">Phone</label>
+                            <input type="text" id="profile-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-location">Location</label>
+                            <input type="text" id="profile-location">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-network">Network Name</label>
+                            <input type="text" id="profile-network">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-timezone">Timezone</label>
+                            <input type="text" id="profile-timezone">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                        <div id="profile-message" class="inline-message"></div>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
