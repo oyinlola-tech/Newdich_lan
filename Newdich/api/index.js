@@ -1,4 +1,6 @@
-const API_BASE_URL = 'https://your-backend.com/api';
+const API_BASE_URL = (typeof window !== 'undefined' && window.NEWDICH_API_BASE_URL)
+    ? window.NEWDICH_API_BASE_URL
+    : 'https://your-backend.com/api';
 
 export async function getPackages() {
     const response = await fetch(`${API_BASE_URL}/packages`);

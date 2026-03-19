@@ -1,29 +1,74 @@
-# Newdich Merchant Portal
+# Newdich Lan Frontends
 
-Frontend-only merchant portal for managing users, plans, payments, and profile data.
+This repo contains two separate frontend apps:
 
-## Structure
+- `Newdich/` marketing + merchant onboarding site
+- `Merchant/` merchant portal (admin + captive portal)
 
-- `Merchant/` main frontend app
-- `Merchant/api/index.js` client API wrapper (`window.MerchantAPI`)
-- `Merchant/js/` UI logic
-- `Merchant/css/style.css` styling
+## Newdich (Marketing + Signup)
 
-## Quick Start
+Entry point:
 
-Open these files directly in a browser or serve the folder with any static server:
+- `Newdich/index.html`
+
+Key files:
+
+- `Newdich/api/index.js` basic API client
+- `Newdich/js/main.js` page logic
+- `Newdich/css/style.css` styling
+
+APIs used by `Newdich`:
+
+- `GET /api/packages` via `getPackages()`
+- `POST /api/merchants/register` via `registerMerchant(data)`
+
+Default API base:
+
+- `https://your-backend.com/api`
+
+## Merchant (Portal + Admin)
+
+Entry points:
 
 - `Merchant/login.html`
 - `Merchant/admin.html`
 - `Merchant/portal.html`
 
-## Configure API Base URL
+Key files:
 
-By default the app points to:
+- `Merchant/api/index.js` client API wrapper (`window.MerchantAPI`)
+- `Merchant/js/admin.js` admin UI
+- `Merchant/js/login.js` login UI
+- `Merchant/js/portal.js` captive portal UI
+- `Merchant/css/style.css` styling
+
+APIs used by `Merchant`:
+
+- Auth: `login(credentials)`
+- Plans: `getPlans()`, `createPlan()`, `updatePlan()`, `deletePlan()`
+- Users: `getUsers()`, `toggleUserActive(mac)`, `extendUser(mac, hours)`
+- Payments: `getPaymentHistory()`, `verifyPayment(reference)`, `refundPayment(transactionId)`
+- Insights: `getStats()`, `getRevenueSummary()`
+- Profile: `getMerchantProfile()`, `updateMerchantProfile(data)`
+
+Default API base:
 
 - `https://your-backend.com/api/merchant`
 
-To override without editing JS, set this global before `api/index.js`:
+## Configure API Base URLs
+
+You can override each app’s API base without editing JS by setting a global before the API script.
+
+Newdich:
+
+```html
+<script>
+  window.NEWDICH_API_BASE_URL = 'https://api.example.com/api';
+</script>
+<script src="api/index.js"></script>
+```
+
+Merchant:
 
 ```html
 <script>
@@ -32,26 +77,7 @@ To override without editing JS, set this global before `api/index.js`:
 <script src="api/index.js"></script>
 ```
 
-Or set it from JS:
-
-```js
-window.MerchantAPI.setApiBaseUrl('https://api.example.com/api/merchant');
-```
-
-## Client APIs Used
-
-The UI uses the following methods from `window.MerchantAPI`:
-
-- `login(credentials)`
-- `getPlans()`, `createPlan()`, `updatePlan()`, `deletePlan()`
-- `getUsers()`, `toggleUserActive(mac)`, `extendUser(mac, hours)`
-- `getPaymentHistory()`, `verifyPayment(reference)`, `refundPayment(transactionId)`
-- `getStats()`, `getRevenueSummary()`
-- `getMerchantProfile()`, `updateMerchantProfile(data)`
-
-Ensure your backend provides matching endpoints.
-
 ## Notes
 
 - Auth token is stored in `localStorage` as `merchant_token`.
-- Currency display is `NGN`.
+- Currency display is `NGN` in Merchant and `$` in Newdich packages (update as needed).
