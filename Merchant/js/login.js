@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const API = window.MerchantAPI;
+    if (!API) {
+        alert('API not loaded. Please check api/index.js');
+        return;
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const form = document.getElementById('login-form');
@@ -16,16 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const result = await login({ email, password });
+            const result = await API.login({ email, password });
             if (result.token) {
-                localStorage.setItem('merchant_token', result.token);
-                localStorage.setItem('merchant_id', result.merchant_id);
+                API.setAuthToken(result.token);
+                if (result.merchant_id) localStorage.setItem('merchant_id', result.merchant_id);
                 window.location.href = 'admin.html';
             } else {
                 showMessage(result.message || 'Login failed.', 'error');
             }
         } catch (error) {
-            showMessage('Network error. Please try again.', 'error');
+            showMessage(error.message || 'Network error. Please try again.', 'error');
         }
     });
 

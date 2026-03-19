@@ -1,8 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const API = window.MerchantAPI;
+    if (!API) {
+        alert('API not loaded. Please check api/index.js');
+        return;
+    }
+
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Check authentication
-    const token = localStorage.getItem('merchant_token');
+    const token = API.getAuthToken();
     if (!token) {
         window.location.href = 'login.html';
         return;
@@ -45,21 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPlansList();
 });
 
+function escapeHTML(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 // Users
 async function loadUsers() {
     try {
-        const users = await getUsers();
+        const users = await window.MerchantAPI.getUsers();
         const tbody = document.querySelector('#users-table tbody');
+        if (!Array.isArray(users) || users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8">No users found.</td></tr>';
+            return;
+        }
         tbody.innerHTML = users.map(user => `
             <tr>
-                <td>${user.mac}</td>
-                <td>${user.ip}</td>
-                <td>${user.email}</td>
-                <td>${user.plan}</td>
-                <td>${user.hours_paid_for}</td>
-                <td>${user.expires_at}</td>
-                <td>${user.active}</td>
-                <td><button class="btn btn-secondary" onclick="toggleActive('${user.mac}')">Toggle</button></td>
+                <td>${escapeHTML(user.mac)}</td>
+                <td>${escapeHTML(user.ip)}</td>
+                <td>${escapeHTML(user.email)}</td>
+                <td>${escapeHTML(user.plan)}</td>
+                <td>${escapeHTML(user.hours_paid_for)}</td>
+                <td>${escapeHTML(user.expires_at)}</td>
+                <td>${user.active ? 'Active' : 'Inactive'}</td>
+                <td><button class="btn btn-secondary" onclick="toggleActive('${escapeHTML(user.mac)}')">Toggle</button></td>
             </tr>
         `).join('');
     } catch (error) {
@@ -70,17 +89,21 @@ async function loadUsers() {
 // Payment History
 async function loadHistory() {
     try {
-        const history = await getPaymentHistory();
+        const history = await window.MerchantAPI.getPaymentHistory();
         const tbody = document.querySelector('#history-table tbody');
+        if (!Array.isArray(history) || history.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7">No payments found.</td></tr>';
+            return;
+        }
         tbody.innerHTML = history.map(item => `
             <tr>
-                <td>${item.email}</td>
-                <td>$${item.amount}</td>
-                <td>${item.status}</td>
-                <td>${item.transaction_id}</td>
-                <td>${item.date_started || item.date_completed}</td>
-                <td>${item.plan}</td>
-                <td>${item.hours_paid_for}</td>
+                <td>${escapeHTML(item.email)}</td>
+                <td>NGN ${escapeHTML(item.amount)}</td>
+                <td>${escapeHTML(item.status)}</td>
+                <td>${escapeHTML(item.transaction_id)}</td>
+                <td>${escapeHTML(item.date_started || item.date_completed)}</td>
+                <td>${escapeHTML(item.plan)}</td>
+                <td>${escapeHTML(item.hours_paid_for)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -91,11 +114,15 @@ async function loadHistory() {
 // Plans list
 async function loadPlansList() {
     try {
-        const plans = await getPlans();
+        const plans = await window.MerchantAPI.getPlans();
         const container = document.getElementById('plan-list');
+        if (!Array.isArray(plans) || plans.length === 0) {
+            container.innerHTML = '<div class="plan-item">No plans found.</div>';
+            return;
+        }
         container.innerHTML = plans.map(plan => `
             <div class="plan-item">
-                <span><strong>${plan.name}</strong> - ${plan.duration_hours} hours - $${plan.price}</span>
+                <span><strong>${escapeHTML(plan.name)}</strong> - ${escapeHTML(plan.duration_hours)} hours - NGN ${escapeHTML(plan.price)}</span>
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="editPlan(${plan.id})">Edit</button>
                     <button class="btn btn-secondary" onclick="deletePlan(${plan.id})">Delete</button>
@@ -137,20 +164,20 @@ async function savePlan(e) {
 
     try {
         if (id) {
-            await updatePlan(id, planData);
+            await window.MerchantAPI.updatePlan(id, planData);
         } else {
-            await createPlan(planData);
+            await window.MerchantAPI.createPlan(planData);
         }
         hidePlanForm();
         loadPlansList();
     } catch (error) {
-        alert('Failed to save plan.');
+        alert(error.message || 'Failed to save plan.');
     }
 }
 
 // Edit/Delete functions (called from inline buttons)
 window.editPlan = async (id) => {
-    const plans = await getPlans();
+    const plans = await window.MerchantAPI.getPlans();
     const plan = plans.find(p => p.id == id);
     if (plan) showPlanForm(plan);
 };
@@ -158,16 +185,20 @@ window.editPlan = async (id) => {
 window.deletePlan = async (id) => {
     if (confirm('Are you sure?')) {
         try {
-            await deletePlan(id);
+            await window.MerchantAPI.deletePlan(id);
             loadPlansList();
         } catch (error) {
-            alert('Failed to delete plan.');
+            alert(error.message || 'Failed to delete plan.');
         }
     }
 };
 
 // Toggle active status
 window.toggleActive = async (mac) => {
-    // Not implemented in API spec, but you can call a PUT /users/{mac}/toggle if available
-    alert('Toggle active not implemented in this demo.');
+    try {
+        await window.MerchantAPI.toggleUserActive(mac);
+        loadUsers();
+    } catch (error) {
+        alert(error.message || 'Failed to toggle user status.');
+    }
 };
