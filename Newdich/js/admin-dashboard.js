@@ -306,7 +306,6 @@ function renderMerchants() {
                 : 'badge-warning';
         return `
             <tr>
-                <td>${m.merchant_id ?? '-'}</td>
                 <td>${m.fullname || '-'}</td>
                 <td>${m.email || '-'}</td>
                 <td>${m.phone || '-'}</td>
